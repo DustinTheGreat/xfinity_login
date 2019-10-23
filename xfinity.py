@@ -1,9 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import time
 import subprocess
 import random
 import string 
+from tqdm import tqdm
+
+
 
 
 def random_email():
@@ -14,10 +23,14 @@ def random_email():
 	USERNAME= name+numbers
 	EMAIL = USERNAME + random.choice(domains)
 	return(USERNAME, EMAIL)
+
+
 def reset_wifi():
 	subprocess.call(["sudo nmcli c del id xfinitywifi"], shell=True)
 	subprocess.call(["sudo ifconfig wlp3s0 down"], shell=True)
+	time.sleep(1)
 	subprocess.call(["sudo macchanger -r wlp3s0"], shell=True)
+	time.sleep(2)
 	subprocess.call(["sudo ifconfig wlp3s0 up"], shell=True)
 	time.sleep(15)
 	subprocess.call(["nmcli d wifi connect xfinitywifi"], shell=True)
@@ -27,10 +40,15 @@ def reset_wifi():
 def signup():
 	USERNAME, EMAIL = random_email()
 	#setup
+	capa = DesiredCapabilities.CHROME
+	capa["pageLoadStrategy"] = "none"
+	options = Options()
+	options.add_argument('--headless')
 	chromedriver = 'chromedriver'
-	driver = webdriver.Chrome()
+	driver = webdriver.Chrome(desired_capabilities=capa, options=options)
 	driver.get('http://10.232.0.1')
 	#page1
+	time.sleep(10)
 	b = driver.find_element_by_id("amdocs_signup")
 	b.click()
 
@@ -40,14 +58,21 @@ def signup():
 	free.click()
 	c = driver.find_element_by_id("continueButton")
 	c.click()
+	time.sleep(1)
 	n = driver.find_element_by_id("upgradeOfferCancelButton")
 	n.click()
-
-	#page 3 form
-	driver.refresh()
 	time.sleep(1)
-	#pafe
+	#page 3 form
+	time.sleep(1)
+	#page
+	capa = DesiredCapabilities.CHROME
+	capa["pageLoadStrategy"] = "none"
 
+
+	#wait.until(EC.presence_of_element_located((By.ID, '#dk0-combobox')))
+
+	time.sleep(2)
+	driver.execute_script("window.stop();")
 	first =  driver.find_element_by_name("firstName")
 	last = driver.find_element_by_name("lastName")
 	username = driver.find_element_by_name("userName")
@@ -71,11 +96,16 @@ def signup():
 	confirm_password.send_keys("randompass22")
 	submit_button.click()
 	#page4
-	time.sleep(5)
 	#wait to initialize need to chage to see when spinner stops
-	activate_pass = driver.find_element_by_id("_orderConfirmationActivatePass")
+	#wait.until(EC.presence_of_element_located((By.ID, '_orderConfirmationActivatePass')))
 
+	time.sleep(20)
+	activate_pass = driver.find_element_by_id("_orderConfirmationActivatePass")
+	activate_pass.click()
+	print("You got internet bitch!")
 #reset_wifi()
-#time.sleep(3)
+
+reset_wifi()
+time.sleep(5)
 signup()
-random_email()
+
