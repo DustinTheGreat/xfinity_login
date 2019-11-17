@@ -14,6 +14,7 @@ import string
 from tqdm import tqdm
 import sys
 import os
+import argparse
 
 
 
@@ -27,16 +28,16 @@ def random_email():
 	return(USERNAME, EMAIL)
 
 
-def change_mac(pbar):
+def change_mac(pbar, interface):
 	subprocess.call(["sudo nmcli c del id xfinitywifi"], stderr=open(os.devnull, 'wb'), stdout=open(os.devnull, 'wb'), shell=True)
-	subprocess.call(["sudo ifconfig wlp3s0 down"], shell=True)
+	subprocess.call(["sudo ifconfig {} down".format(interface)], shell=True)
 	time.sleep(1)
 	try:
-		subprocess.call(["sudo macchanger -r wlp3s0"], stderr=open(os.devnull, 'wb'), stdout=open(os.devnull, 'wb'), shell=True)
+		subprocess.call(["sudo macchanger -r {}".format(interface)], stderr=open(os.devnull, 'wb'), stdout=open(os.devnull, 'wb'), shell=True)
 	except OSError:
 		time.sleep(3)
 		try:
-			subprocess.call(["sudo macchanger -r wlp3s0"],stderr=open(os.devnull, 'wb'), stdout=open(os.devnull, 'wb'), shell=True)
+			subprocess.call(["sudo macchanger -r {}".format(interface)],stderr=open(os.devnull, 'wb'), stdout=open(os.devnull, 'wb'), shell=True)
 		except OSError:
 			subprocess.call(["sudo service network-manager restart"], shell=True)
 			time.sleep(10)
@@ -44,14 +45,14 @@ def change_mac(pbar):
 	
 	pbar.update(5)
 
-def connect_wifi(pbar):
-	wifi_up = subprocess.call(["sudo ifconfig wlp3s0 up"], stderr=open(os.devnull, 'wb'), shell=True)
+def connect_wifi(pbar, interface):
+	wifi_up = subprocess.call(["sudo ifconfig {} up".format(interface)], stderr=open(os.devnull, 'wb'), shell=True)
 	if wifi_up != 0:
 		#troubleshooting network issues
 		#try unblocking wifi card and if that does work restart wifi service
 		subprocess.call(["sudo rfkill unblock wifi; sudo rfkill unblock all"], shell=True)
 		time.sleep(2)
-		wifi_up = subprocess.call(["sudo ifconfig wlp3s0 up"],stderr=open(os.devnull, 'wb'), shell=True)
+		wifi_up = subprocess.call(["sudo ifconfig {} up"].format(interface),stderr=open(os.devnull, 'wb'), shell=True)
 		if wifi_up != 0:
 			subprocess.call(["sudo service network-manager restart"], shell=True)
 			print("-----restarting------")
@@ -157,15 +158,22 @@ def signup(pbar):
 	activate_pass.click()
 	pbar.update(20)
 
+def parser():
+	parser = argparse.ArgumentParser(description='Please provide network interface to spoof')
+	parser.add_argument('-i', '--interface' , type=str,
+	                    help='Please provide interface from ifconfig. ie: wlan0', required=True)
+	args = vars(parser.parse_args())
+	return(args)
 def main():
+	args = parser()
 	pbar = tqdm(total=100) 
-	change_mac(pbar)
+	change_mac(pbar, args["interface"])
 	time.sleep(2)
-	connect_wifi(pbar)
+	connect_wifi(pbar, args["interface"])
 	time.sleep(1)
 	signup(pbar)
 	pbar.close()
 	print("You got internet bitch!")
 
-
-main()
+if __name__ == '__main__':
+	main()
