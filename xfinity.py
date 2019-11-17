@@ -2,7 +2,6 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -45,7 +44,7 @@ def change_mac(pbar):
 	
 	pbar.update(5)
 
-def connect_wifi(pbar)
+def connect_wifi(pbar):
 	wifi_up = subprocess.call(["sudo ifconfig wlp3s0 up"], stderr=open(os.devnull, 'wb'), shell=True)
 	if wifi_up != 0:
 		#troubleshooting network issues
@@ -89,8 +88,7 @@ def setup(pbar):
 	capa["pageLoadStrategy"] = "none"
 	options = Options()
 	options.add_argument('--headless')
-	chromedriver = 'chromedriver'
-	driver = webdriver.Chrome(desired_capabilities=capa, options=options)
+	driver = webdriver.Chrome(executable_path="./chromedriver", desired_capabilities=capa,options=options)
 	
 	driver.implicitly_wait(60)
 	driver.get('http://10.232.0.1')
@@ -163,7 +161,7 @@ def main():
 	pbar = tqdm(total=100) 
 	change_mac(pbar)
 	time.sleep(2)
-	connect_wifi()
+	connect_wifi(pbar)
 	time.sleep(1)
 	signup(pbar)
 	pbar.close()
