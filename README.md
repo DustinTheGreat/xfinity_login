@@ -5,6 +5,8 @@ I created a script that would automatically connect to the wifi and spoof of WiF
 
 So far the program takes about 30 seconds to run. 
 ## Get Started:
+<code>pip3 install -r requirements.txt</code>
+
 <code> Python 3.7.4 (default, Sep  7 2019, 18:27:02)</code>
 
-<code> >>> python xinity.py -i [Interface] </code>
+<code> >>> python xfinity.py -i [Interface] </code>
