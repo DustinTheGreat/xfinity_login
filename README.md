@@ -1,7 +1,6 @@
 # xfinity_login
 ## Update:
-This project is currently deprecated.....becuase Xfinity sucks
-. But dont worry I'll be back with an update, Internet afterall should be free.
+This project is currently deprecated.....becuase Xfinity sucks.I'll be back with an update, Internet afterall should be free.
 You can currently still DNS tunnel and gain free internet, but will hit some limitations far as bandwith is concerned. 
 
 ## About:
