@@ -5,8 +5,6 @@ Xfinity has over 18 million hotspots worldwide. If you don't already know you ca
 This program is running on a headless pi to stay online in several locations. 
 So far the program takes about 30 seconds to run. 
 ## Get Started:
-<code>pip3 install -r requirements.txt</code>
+    pip3 install -r requirements.txt
 
-<code> Python 3.7.4 (default, Sep  7 2019, 18:27:02)</code>
-
-<code> >>> python xfinity.py -i [Interface] </code>
+    python xfinity.py -i [Interface] 
